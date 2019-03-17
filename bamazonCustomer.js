@@ -5,7 +5,7 @@ var con = mysql.createConnection({
   host: "localhost",
   host: 'localhost',
   user: 'root',
-  password: 'Completeview!',
+  password: 'xxxxxxxxx',
   database: 'bamazon'
 });
 
@@ -21,7 +21,7 @@ function getItems() {
     for (let i = 0; i < res.length; i++) {
       console.log(`
       
-orderItem: ${res[i].item_orderItem}
+orderItem: ${res[i].item_id}
 Product name: ${res[i].product_name}
 Price: $${res[i].price}
 -------------
@@ -39,7 +39,7 @@ function start() {
         name: "item",
         type: "input",
         message: "What is the the orderItem of the product you would like to buy?",
-        valorderItemate: function(value) {
+        valorderIte5mate: function(value) {
           if (isNaN(value)) {
             return false;
           } else {
@@ -72,34 +72,13 @@ function start() {
           if (res[0].stock_quantity > orderQuantity) {
             let newQuantity = res[0].stock_quantity - orderQuantity;
             let pricePaorderItem = orderQuantity * price;
-            updateDatabase(newQuantity, orderItem);
-            console.log(
-              `
-You purchased ${orderQuantity} item(s) for total price $${pricePaorderItem}
-              `
-            );
-            inquirer
-              .prompt([
-                {
-                  name: "another",
-                  type: "confirm",
-                  message: "Do you want to purchase another product?",
-                  choices: ["yes", "no"]
-                  
-                }
-                
-              ])
-              .then(function(answer) {
-                console.log(answer);
-                if (answer.another !== "yes") {
-                  console.log(answer);
-                  start();
-                  
-                } else {
-                  con.end();
-                }
-              });
-          } else {
+             updateDatabase(newQuantity, orderItem);
+            console.log(`You purchased ${orderQuantity} item(s) for total price $${pricePaorderItem}`);
+
+            temp();
+            }
+          
+          else {
             console.log("Insufficient quantity of product, please try again");
             start();
           }
@@ -116,11 +95,39 @@ function updateDatabase(newQuantity, orderItem) {
         stock_quantity: newQuantity,
       },
       {
-        item_orderItem: orderItem
+        item_id: orderItem
       }
     ],
     function(err) {
       if (err) throw err;
     }
   );
+}
+
+
+
+
+
+function temp(){   
+  inquirer
+  .prompt([
+    {
+      name: "another",
+      type: "confirm",
+      message: "Do you want to purchase another product?",
+
+      
+    }
+    
+  ])
+  .then(function(answer) {
+    console.log(answer);
+    if (answer.another !== "yes") {
+      console.log(answer);
+      start()
+      
+    } else {
+      con.end();
+    }
+  });
 }
