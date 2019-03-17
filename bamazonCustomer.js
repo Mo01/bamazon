@@ -5,7 +5,7 @@ var con = mysql.createConnection({
   host: "localhost",
   host: 'localhost',
   user: 'root',
-  password: 'xxxxxxxxxx',
+  password: 'Completeview!',
   database: 'bamazon'
 });
 
@@ -36,8 +36,8 @@ function start() {
   inquirer
     .prompt([
       {
-        type: "input",
         name: "item",
+        type: "input",
         message: "What is the the orderItem of the product you would like to buy?",
         valorderItemate: function(value) {
           if (isNaN(value)) {
@@ -48,8 +48,8 @@ function start() {
         }
       },
       {
-        type: "input",
         name: "quantity",
+        type: "input",
         message: "How many units of the product you would like to buy?",
         valorderItemate: function(value) {
           if (isNaN(value)) {
@@ -72,24 +72,29 @@ function start() {
           if (res[0].stock_quantity > orderQuantity) {
             let newQuantity = res[0].stock_quantity - orderQuantity;
             let pricePaorderItem = orderQuantity * price;
-            updateDatabase(newQuantity, pricePaorderItem, orderItem);
+            updateDatabase(newQuantity, orderItem);
             console.log(
               `
-Success, you purchased ${orderQuantity} items for $${pricePaorderItem}
+You purchased ${orderQuantity} item(s) for total price $${pricePaorderItem}
               `
             );
             inquirer
               .prompt([
                 {
-                  type: "list",
                   name: "another",
+                  type: "confirm",
                   message: "Do you want to purchase another product?",
                   choices: ["yes", "no"]
+                  
                 }
+                
               ])
               .then(function(answer) {
-                if (answer.another === "yes") {
+                console.log(answer);
+                if (answer.another !== "yes") {
+                  console.log(answer);
                   start();
+                  
                 } else {
                   con.end();
                 }
@@ -103,7 +108,7 @@ Success, you purchased ${orderQuantity} items for $${pricePaorderItem}
     });
 }
 
-function updateDatabase(newQuantity, pricePaorderItem, previousSales, orderItem) {
+function updateDatabase(newQuantity, orderItem) {
   con.query(
     "UPDATE products SET ? WHERE ?",
     [
